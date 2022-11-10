@@ -1,4 +1,4 @@
-version: '2'
+version: '3.2'
 
 networks:
   app-tier:
@@ -6,13 +6,31 @@ networks:
 
 services:
   etcd:
-    image: bitnami/etcd:latest
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    image: quay.io/coreos/etcd
     ports:
       - 2379:2379
-      - 2380:2380
+    volumes:
+      - etcd_data:/etcd_data
+    command:
+      - /usr/local/bin/etcd
+      - -name
+      - etcd
+      - --data-dir
+      - /etcd_data
+      - -advertise-client-urls
+      - http://etcd:2379
+      - -listen-client-urls
+      - http://0.0.0.0:2379
+      - -initial-advertise-peer-urls
+      - http://etcd:2380
+      - -listen-peer-urls
+      - http://0.0.0.0:2380
+      - --quota-backend-bytes
+      - '47185920' #45*1024*1024=45M
+#      - --auto-compaction-retention
+#      - '0.01'
+#      - -initial-cluster
+#      - etcd=http://etcd:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380
     networks:
       - app-tier
 
@@ -25,7 +43,7 @@ services:
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - ./grafana/dashboards/:/etc/grafana/dashboards/
-      - grafana-data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
     networks:
       - app-tier
 
@@ -50,5 +68,6 @@ services:
       - app-tier
 
 volumes:
-  grafana-data:
+  grafana_data:
   prometheus_data:
+  etcd_data:
