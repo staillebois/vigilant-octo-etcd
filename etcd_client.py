@@ -1,14 +1,21 @@
 import etcd3
+import uuid
 
 
-def main():
-    etcd = etcd3.client()
+def main(etcd_):
+    etcd_key = str(uuid.uuid1())
 
-    print(etcd.get('foo'))
-    print(etcd.put('bar', 'doot'))
-    print(etcd.get('bar'))
-    print(etcd.delete('bar'))
+    etcd_.put(etcd_key, etcd_key)
+    print(f'PUT {etcd_key}')
+    etcd_.put(etcd_key, etcd_key)
+    print(f'PUT update {etcd_key}')
+    etcd_.put(etcd_key, etcd_key)
+    print(f'PUT update {etcd_key}')
+    etcd_.put(etcd_key, etcd_key)
+    print(f'PUT update {etcd_key}')
 
 
 if __name__ == '__main__':
-    main()
+    etcd = etcd3.client()
+    while True:
+        main(etcd)
