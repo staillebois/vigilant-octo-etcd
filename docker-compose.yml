@@ -22,7 +22,9 @@ services:
       - 3000:3000
     restart: unless-stopped
     volumes:
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards/:/etc/grafana/dashboards/
       - grafana-data:/var/lib/grafana
     networks:
       - app-tier
