@@ -25,8 +25,8 @@ services:
       - http://etcd:2380
       - -listen-peer-urls
       - http://0.0.0.0:2380
-      - --quota-backend-bytes
-      - '47185920' #45*1024*1024=45M
+#      - --quota-backend-bytes
+#      - '47185920' #45*1024*1024=45M
 #      - --auto-compaction-retention
 #      - '0.01'
 #      - -initial-cluster
@@ -64,6 +64,14 @@ services:
       - 9090:9090
 #    expose:
 #      - 9090
+    networks:
+      - app-tier
+
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    restart: always
     networks:
       - app-tier
 
